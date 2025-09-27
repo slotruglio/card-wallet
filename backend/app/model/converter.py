@@ -15,7 +15,7 @@ class OrmPydanticHelper:
         If nested=True, also converts relationships if they are Pydantic-compatible
         """
         data = {}
-        for field in pyd_model.__fields__:
+        for field in pyd_model.model_fields:
             if hasattr(orm_instance, field):
                 value = getattr(orm_instance, field)
                 # convert UUID to str

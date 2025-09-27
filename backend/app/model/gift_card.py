@@ -1,11 +1,14 @@
 from __future__ import annotations  # Needed for Python 3.11+ forward references
 
+from datetime import datetime
 from typing import Optional
 import uuid
-from sqlalchemy import UUID, ForeignKey, LargeBinary
+from sqlalchemy import TIMESTAMP, UUID, ForeignKey, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from pydantic import Field, computed_field
+from pydantic import AwareDatetime, Field, computed_field, field_validator
+
+from ..utility.dates import force_utc
 
 from .base import BaseClass, BaseORM
 
@@ -22,7 +25,12 @@ class GiftCard(BaseClass):
     spent_amount: int = Field(description="Spent Amount in EURO of the gift card. This number is the value x100 to be int", examples=[123000, 12000])
     user: Optional["User"] = Field(default=None, description="User who owns the giftcard")
     file: Optional[bytes] = Field(default=None, description="GiftCard as bytes. can be an image or a pdf")
-    
+    expiration_date: Optional[AwareDatetime] = Field(default=None, description="Expiration date")
+
+    @field_validator("expiration_date", mode="before")
+    def force_utc_expiration_date(cls, v: datetime) -> datetime:
+        return force_utc(v)
+
     @computed_field(return_type=float,description="Amount in EURO of the gift card", examples=[1230.00, 120.00])
     @property
     def currency_amount(self) -> float:
@@ -51,6 +59,7 @@ class GiftCardORM(BaseORM):
     supplier: Mapped[str] = mapped_column(nullable=False)
     amount: Mapped[int] = mapped_column(nullable=False)
     spent_amount: Mapped[int] = mapped_column(default=0)
+    expiration_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
 
     user_id: Mapped[int | None] = mapped_column(
         ForeignKey("user.id", ondelete="SET NULL"),
