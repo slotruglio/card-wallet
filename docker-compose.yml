@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: card-wallet-backend:latest
     container_name: fastapi-backend
     restart: always
     depends_on:
