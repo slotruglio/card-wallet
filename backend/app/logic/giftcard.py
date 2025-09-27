@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy import select, and_, desc, asc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..model.wrapper import GiftCardORM
+from ..model.gift_card import GiftCardORM
 
 
 async def get_giftcards(

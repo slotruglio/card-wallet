@@ -4,7 +4,7 @@ import uuid
 from sqlalchemy import UUID  # Needed for Python 3.11+ forward references
 
 
-from .base import BaseClass, BaseORM, TimestampMixin
+from .base import BaseClass, BaseORM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pydantic import Field
 
@@ -14,7 +14,7 @@ class User(BaseClass):
     giftcards: list["GiftCard"] = Field(default=list(), description="User's giftcards")
 
 
-class UserORM(BaseORM, TimestampMixin):
+class UserORM(BaseORM):
     __tablename__ = "user"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

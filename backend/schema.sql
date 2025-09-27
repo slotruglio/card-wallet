@@ -1,0 +1,25 @@
+
+CREATE TABLE "user" (
+	id UUID NOT NULL, 
+	name VARCHAR NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+;
+
+CREATE TABLE giftcard (
+	id UUID NOT NULL, 
+	supplier VARCHAR NOT NULL, 
+	amount INTEGER NOT NULL, 
+	spent_amount INTEGER NOT NULL, 
+	user_id UUID, 
+	file BYTEA, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(user_id) REFERENCES "user" (id) ON DELETE SET NULL
+)
+
+;

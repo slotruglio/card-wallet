@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from pydantic import Field, computed_field
 
-from .base import BaseClass, BaseORM, TimestampMixin
+from .base import BaseClass, BaseORM
 
 def int_to_currency(a: int) -> float:
     return a / 100
@@ -44,7 +44,7 @@ class GiftCard(BaseClass):
     def currency_available_amount(self) -> float:
         return int_to_currency(self.available_amount)
 
-class GiftCardORM(BaseORM, TimestampMixin):
+class GiftCardORM(BaseORM):
     __tablename__ = "giftcard"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

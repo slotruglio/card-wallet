@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logic.giftcard import get_giftcards
-from ..logic.db import get_session
+from ..utility.db import get_session
 from ..model.wrapper import GiftCard
 from ..model.converter import OrmPydanticHelper
 from ..enumerators.enums import GiftCardSpentFilter, GiftCardSortField, SortOrderFilter

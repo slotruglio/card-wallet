@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..logic.db import get_session
+from ..utility.db import get_session
 from ..model.wrapper import User
 from ..enumerators.enums import SortOrderFilter, UserSortField
 router = APIRouter(tags=["users"])
