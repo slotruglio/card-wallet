@@ -1,6 +1,6 @@
 from __future__ import annotations  # Needed for Python 3.11+ forward references
 
-from typing import Union
+from typing import Optional, Union
 import uuid
 from sqlalchemy import UUID, ForeignKey, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -20,8 +20,8 @@ class GiftCard(BaseClass):
     supplier: str = Field(description="Gift Card Producer", examples=["Amazon", "Q8"])
     amount: int = Field(description="Amount in EURO of the gift card. This number is the value x100 to be int", examples=[123000, 12000])
     spent_amount: int = Field(description="Spent Amount in EURO of the gift card. This number is the value x100 to be int", examples=[123000, 12000])
-    user: Union["User", None] = Field(default=None, description="User who owns the giftcard")
-    file: Union[bytes, None] = Field(default=None, description="GiftCard as bytes. can be an image or a pdf")
+    user: Optional["User"] = Field(default=None, description="User who owns the giftcard")
+    file: Optional[bytes] = Field(default=None, description="GiftCard as bytes. can be an image or a pdf")
     
     @computed_field(return_type=float,description="Amount in EURO of the gift card", examples=[1230.00, 120.00])
     @property
