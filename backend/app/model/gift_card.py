@@ -1,6 +1,6 @@
 from __future__ import annotations  # Needed for Python 3.11+ forward references
 
-from typing import Optional, Union
+from typing import Optional
 import uuid
 from sqlalchemy import UUID, ForeignKey, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column, relationship

@@ -11,6 +11,12 @@ class GiftCardSortField(str, Enum):
     amount = "amount"
     spent_amount = "spent_amount"
 
+class UserSortField(str, Enum):
+    id = "id"
+    name = "name"
+    created_at = "created_at"
+
+
 class SortOrderFilter(str, Enum):
     desc = "desc"
     asc = "asc"

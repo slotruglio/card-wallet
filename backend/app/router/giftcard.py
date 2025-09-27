@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logic.giftcard import get_giftcards
@@ -9,7 +9,7 @@ from ..model.converter import OrmPydanticHelper
 from ..enumerators.enums import GiftCardSpentFilter, GiftCardSortField, SortOrderFilter
 
 
-router = APIRouter(tags=["giftcard"])
+router = APIRouter(tags=["giftcards"])
 
 @router.get("/", response_model=List[GiftCard])
 async def read_giftcards(
@@ -21,8 +21,8 @@ async def read_giftcards(
     spent: Optional[GiftCardSpentFilter] = Query(None, description="Filter by spent status"),
     limit: int = Query(50, ge=1, le=100, description="Number of items per page"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
-    sort_by: Optional[GiftCardSortField] = Query("created_at", description="Field to sort by"),
-    sort_order: Optional[SortOrderFilter] = Query("desc", description="Sort order"),
+    sort_by: GiftCardSortField = Query("created_at", description="Field to sort by"),
+    sort_order: SortOrderFilter = Query("desc", description="Sort order"),
     session: AsyncSession = Depends(get_session),
 ) -> List[GiftCard]:
     orm_giftcards = await get_giftcards(
@@ -40,3 +40,34 @@ async def read_giftcards(
     )
 
     return [OrmPydanticHelper.orm_to_pydantic(gc, GiftCard) for gc in orm_giftcards]
+
+@router.get("/{giftcard_id}", response_model=GiftCard)
+async def read_giftcard(giftcard_id: str):
+    pass
+
+@router.post("/", response_model=GiftCard)
+async def create_giftcard(giftcard: GiftCard):
+    pass
+
+@router.post("/{giftcard_id}/upload")
+async def upload_giftcard_file(giftcard_id: str, file: UploadFile):
+    """
+    Upload a PDF or image for a gift card
+    """
+    pass
+
+@router.patch("/{giftcard_id}/spend")
+async def spend_giftcard_amount(giftcard_id: str, spent_amount: int):
+    """
+    Increment the spent amount for a gift card
+    """
+    pass
+
+
+@router.put("/{giftcard_id}", response_model=GiftCard)
+async def update_giftcard(giftcard_id: str):
+    pass
+
+@router.delete("/{giftcard_id}")
+async def delete_giftcard(giftcard_id: str):
+    pass

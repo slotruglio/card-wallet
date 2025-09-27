@@ -1,5 +1,5 @@
-from .gift_card import GiftCard, GiftCardORM
-from .user import User, UserORM
+from .gift_card import GiftCard
+from .user import User
 
 # After both classes exist
 User.model_rebuild()

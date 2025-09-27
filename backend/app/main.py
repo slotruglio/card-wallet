@@ -4,9 +4,11 @@ from typing import Union
 from fastapi import FastAPI
 
 from .router.giftcard import router as giftcard_router
+from .router.user import router as user_router
 
 app = FastAPI()
-app.include_router(giftcard_router, prefix="/giftcard")
+app.include_router(giftcard_router, prefix="/giftcards")
+app.include_router(user_router, prefix="/users")
 
 @app.get("/")
 def read_root():
