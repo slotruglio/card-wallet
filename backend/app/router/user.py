@@ -48,8 +48,8 @@ async def post_user(user: User, session: AsyncSession = Depends(get_session)):
 
 @router.put("/{user_id}", response_model=User)
 async def update_user(user_id: int, user: User, session: AsyncSession = Depends(get_session)):
-    pass
+    raise NotImplementedError
 
 @router.delete("/{user_id}")
 async def delete_user(user_id: int, session: AsyncSession = Depends(get_session)):
-    pass
+    raise NotImplementedError

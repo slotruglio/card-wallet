@@ -3,7 +3,7 @@ from __future__ import annotations  # Needed for Python 3.11+ forward references
 from datetime import datetime
 from typing import Optional
 import uuid
-from sqlalchemy import TIMESTAMP, UUID, ForeignKey, LargeBinary
+from sqlalchemy import TIMESTAMP, UUID, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from pydantic import AwareDatetime, Field, computed_field, field_validator
@@ -68,7 +68,7 @@ class GiftCardORM(BaseORM):
     spent_amount: Mapped[int] = mapped_column(default=0)
     expiration_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
 
-    user_id: Mapped[int | None] = mapped_column(
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("user.id", ondelete="SET NULL"),
         nullable=True
     )
@@ -78,4 +78,12 @@ class GiftCardORM(BaseORM):
         lazy="selectin"
     )
 
-    file: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
+    file_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("file.id", ondelete="SET NULL"),
+        nullable=True
+    )
+    file = relationship(
+        "FileReadORM",
+        uselist=False,  # important: one-to-one
+        cascade="all, delete-orphan"
+    )

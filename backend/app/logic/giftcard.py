@@ -1,7 +1,9 @@
 from typing import List, Optional
+from fastapi import UploadFile
 from sqlalchemy import select, and_, desc, asc
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..model.file import FileReadORM
 from ..model.gift_card import GiftCardORM
 from ..model.converter import GiftCardOrmPydanticHelper
 
@@ -18,10 +20,13 @@ async def get_giftcards(
     offset: int = 0,
     sort_by: str = "created_at",
     sort_order: str = "desc",
+    giftcard_id: str = ""
 ) -> List[GiftCardORM]:
 
     filters = []
 
+    if giftcard_id:
+        filters.append(GiftCardORM.id == giftcard_id)
     if supplier:
         filters.append(GiftCardORM.supplier == supplier)
     if supplier_search:
@@ -57,8 +62,24 @@ async def get_giftcards(
 
 async def create_giftcard(session: AsyncSession, giftcard) -> GiftCardORM:
     data = GiftCardOrmPydanticHelper.pydantic_to_orm(giftcard)
-    print(data)
     session.add(data)
     await session.commit()
     await session.refresh(data)
     return data
+
+async def save_file(session: AsyncSession, giftcard_id: str, file: UploadFile):
+    contents = await file.read()  # read entire file into memory
+
+    fl = FileReadORM(
+        giftcard_id=giftcard_id,
+        data= contents,
+        filename = file.filename,
+        content_type = file.content_type
+    )
+    session.add(fl)
+    await session.commit()
+    
+async def get_file(session: AsyncSession, giftcard_id: str) -> FileReadORM:
+    stmt = select(FileReadORM).where(FileReadORM.giftcard_id == giftcard_id)
+    result = await session.execute(stmt)
+    return result.scalars().first()

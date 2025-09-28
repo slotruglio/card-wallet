@@ -80,7 +80,6 @@ class GiftCardOrmPydanticHelper(OrmPydanticHelper):
             amount=orm_instance.amount,
             spent_amount=orm_instance.spent_amount,
             user = user,
-            file=orm_instance.file,
             expiration_date=orm_instance.expiration_date
         )
     @staticmethod
@@ -90,7 +89,6 @@ class GiftCardOrmPydanticHelper(OrmPydanticHelper):
             amount=pyd_instance.amount,
             spent_amount=pyd_instance.spent_amount,
             user_id = pyd_instance.user_id,
-            file=pyd_instance.file,
             expiration_date=pyd_instance.expiration_date
         )
 class UserOrmPydanticHelper(OrmPydanticHelper):
@@ -110,3 +108,6 @@ class UserOrmPydanticHelper(OrmPydanticHelper):
     @staticmethod
     def pydantic_to_orm(pyd_instance: User):
         return UserORM(name=pyd_instance.name)
+
+class FileReadOrmPydanticHelper(OrmPydanticHelper):
+    pass

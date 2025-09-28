@@ -1,6 +1,5 @@
-from typing import List, Optional
-from sqlalchemy import select, and_, desc, asc
-from sqlalchemy.orm import selectinload
+from typing import List
+from sqlalchemy import select, desc, asc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.user import UserORM

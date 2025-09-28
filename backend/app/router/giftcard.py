@@ -1,11 +1,14 @@
+from io import BytesIO
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, UploadFile
+from fastapi import exceptions, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logic.giftcard import get_giftcards, create_giftcard
+from ..logic.giftcard import get_giftcards, create_giftcard, save_file, get_file
 from ..utility.db import get_session
-from ..model.wrapper import GiftCard
-from ..model.converter import GiftCardOrmPydanticHelper
+from ..model.wrapper import GiftCard, FileRead
+from ..model.converter import GiftCardOrmPydanticHelper, FileReadOrmPydanticHelper
 from ..enumerators.enums import GiftCardSpentFilter, GiftCardSortField, SortOrderFilter
 
 
@@ -48,17 +51,32 @@ async def read_giftcards(
 async def read_giftcard(giftcard_id: str):
     pass
 
+@router.get("/{giftcard_id}/download")
+async def download_file(giftcard_id: str, session: AsyncSession = Depends(get_session)):
+    data = await get_file(session=session, giftcard_id=giftcard_id)
+    pyd: FileRead = await FileReadOrmPydanticHelper.orm_to_pydantic(data)
+    if pyd is None:
+        raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return StreamingResponse(
+        BytesIO(pyd.data),
+        media_type=pyd.content_type,
+        headers={"Content-Disposition": "attachment; filename={pyd.filename}"}
+    )
+
 @router.post("/", response_model=GiftCard)
 async def post_giftcard(giftcard: GiftCard, session: AsyncSession = Depends(get_session)):
     data = await create_giftcard(session, giftcard)
     return await GiftCardOrmPydanticHelper.orm_to_pydantic(data, nested=True)
 
-@router.post("/{giftcard_id}/upload")
-async def upload_giftcard_file(giftcard_id: str, file: UploadFile):
+@router.post("/{giftcard_id}/upload", status_code=status.HTTP_202_ACCEPTED, responses={status.HTTP_202_ACCEPTED:{}})
+async def upload_giftcard_file(giftcard_id: str, file: UploadFile, session: AsyncSession = Depends(get_session)):
     """
     Upload a PDF or image for a gift card
     """
-    pass
+    if not file.content_type.startswith(("image/", "application/pdf")):
+        raise exceptions.HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    await save_file(session, giftcard_id, file)
+    return 
 
 @router.patch("/{giftcard_id}/spend")
 async def spend_giftcard_amount(giftcard_id: str, spent_amount: int):
@@ -70,8 +88,8 @@ async def spend_giftcard_amount(giftcard_id: str, spent_amount: int):
 
 @router.put("/{giftcard_id}", response_model=GiftCard)
 async def update_giftcard(giftcard_id: str):
-    pass
+    raise NotImplementedError
 
 @router.delete("/{giftcard_id}")
 async def delete_giftcard(giftcard_id: str):
-    pass
+    raise NotImplementedError
