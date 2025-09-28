@@ -3,6 +3,7 @@ from sqlalchemy import select, and_, desc, asc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.gift_card import GiftCardORM
+from ..model.converter import GiftCardOrmPydanticHelper
 
 
 async def get_giftcards(
@@ -53,3 +54,11 @@ async def get_giftcards(
     stmt = select(GiftCardORM).where(*filters).order_by(sort_column).limit(limit).offset(offset)
     result = await session.execute(stmt)
     return result.scalars().all()
+
+async def create_giftcard(session: AsyncSession, giftcard) -> GiftCardORM:
+    data = GiftCardOrmPydanticHelper.pydantic_to_orm(giftcard)
+    print(data)
+    session.add(data)
+    await session.commit()
+    await session.refresh(data)
+    return data

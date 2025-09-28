@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://fastapi:fastapi@localhost:5432/fastapi_db")
 
 # Create async engine
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+engine = create_async_engine(DATABASE_URL, echo=False, future=True)
 
 # Create async session factory
 AsyncSessionLocal = async_sessionmaker(

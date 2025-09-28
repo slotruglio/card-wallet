@@ -4,6 +4,10 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs
 import uuid
 
+from .wrapper import GiftCard, User
+from .user import UserORM
+from .gift_card import GiftCardORM
+
 ORM = TypeVar("ORM", bound=DeclarativeBase)
 Pyd = TypeVar("Pyd", bound=BaseModel)
 
@@ -57,4 +61,52 @@ class OrmPydanticHelper:
                 data["id"] = uuid.UUID(data["id"])
             except ValueError:
                 pass  # keep original if not a valid UUID
+        print(data)
         return orm_model(**data)
+
+
+class GiftCardOrmPydanticHelper(OrmPydanticHelper):
+    @staticmethod
+    async def orm_to_pydantic(orm_instance: GiftCardORM, pyd_model = GiftCard, nested: bool = False):
+        user = None
+        if nested:
+            user = await orm_instance.awaitable_attrs.user
+            user = await UserOrmPydanticHelper.orm_to_pydantic(user)
+        return GiftCard(
+            id = orm_instance.id,
+            created_at=orm_instance.created_at,
+            updated_at=orm_instance.updated_at,
+            supplier=orm_instance.supplier,
+            amount=orm_instance.amount,
+            spent_amount=orm_instance.spent_amount,
+            user = user,
+            file=orm_instance.file,
+            expiration_date=orm_instance.expiration_date
+        )
+    @staticmethod
+    def pydantic_to_orm(pyd_instance: GiftCard):
+        return GiftCardORM(
+            supplier=pyd_instance.supplier,
+            amount=pyd_instance.amount,
+            spent_amount=pyd_instance.spent_amount,
+            user_id = pyd_instance.user_id,
+            file=pyd_instance.file,
+            expiration_date=pyd_instance.expiration_date
+        )
+class UserOrmPydanticHelper(OrmPydanticHelper):
+    @staticmethod
+    async def orm_to_pydantic(orm_instance: UserORM, pyd_model = User, nested: bool = False):
+        giftcards = []
+        if nested:
+            giftcards = await orm_instance.awaitable_attrs.giftcards
+            giftcards = [await GiftCardOrmPydanticHelper.orm_to_pydantic(gc) for gc in giftcards]
+        return User(
+            id = orm_instance.id,
+            created_at=orm_instance.created_at,
+            updated_at=orm_instance.updated_at,
+            name=orm_instance.name,
+            giftcards=giftcards
+        )
+    @staticmethod
+    def pydantic_to_orm(pyd_instance: User):
+        return UserORM(name=pyd_instance.name)

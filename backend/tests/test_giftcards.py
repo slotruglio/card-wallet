@@ -1,10 +1,13 @@
+from httpx import Response
 import pytest
 
 @pytest.mark.asyncio
 async def test_read_giftcards_empty(client):
-    response = await client.get("/giftcards")
+    response: Response = await client.get("/giftcards")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    data = response.json()
+    print("here", data)
+    assert isinstance(data, list)
 
 @pytest.mark.asyncio
 async def test_read_giftcards_with_data(client, sample_giftcard):

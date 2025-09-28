@@ -1,9 +1,14 @@
 from fastapi import APIRouter, Depends, Query
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from ..utility.db import get_session
 from ..model.wrapper import User
 from ..enumerators.enums import SortOrderFilter, UserSortField
+from ..logic.user import get_users, create_user
+from ..model.converter import UserOrmPydanticHelper
+from fastapi import status
+from fastapi import exceptions
 router = APIRouter(tags=["users"])
 
 @router.get("/", response_model=List[User])
@@ -13,18 +18,33 @@ async def read_users(
     sort_by: UserSortField = Query(UserSortField.created_at),
     sort_order: SortOrderFilter = Query("desc"),
     session: AsyncSession = Depends(get_session)):
-    pass
+    data = await get_users(session=session, limit=limit, offset=offset, sort_by=sort_by.value, sort_order=sort_order.value)
+    
+    res = []
+    for x in data:
+        c = await UserOrmPydanticHelper.orm_to_pydantic(x)
+        res.append(c)
+    return res
+
 
 @router.get("/{user_id}", response_model=User)
 async def read_user(
-    user_id: int,
+    user_id: str,
     include_giftcards: bool = Query(False, description="If true, it will include giftcards"),
     session: AsyncSession = Depends(get_session)):
-    pass
+    data = await get_users(session, user_id=user_id, limit=1)
+    if len(data) == 0:
+        raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return await UserOrmPydanticHelper.orm_to_pydantic(data[0], nested=include_giftcards)
 
 @router.post("/", response_model=User)
-async def create_user(user: User, session: AsyncSession = Depends(get_session)):
-    pass
+async def post_user(user: User, session: AsyncSession = Depends(get_session)):
+    try:
+        data = await create_user(session, user)
+    except IntegrityError:
+        raise exceptions.HTTPException(status_code=status.HTTP_409_CONFLICT)
+    as_pyd = await UserOrmPydanticHelper.orm_to_pydantic(data)
+    return as_pyd
 
 @router.put("/{user_id}", response_model=User)
 async def update_user(user_id: int, user: User, session: AsyncSession = Depends(get_session)):

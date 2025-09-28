@@ -11,6 +11,8 @@ from app.model.user import UserORM
 from app.model.gift_card import GiftCardORM
 from app.utility.db import DATABASE_URL, get_session
 
+CLIENT_BASE_URL = "http://test"
+
 # To run async tests
 pytestmark = pytest.mark.anyio
 
@@ -73,7 +75,14 @@ async def client(
     # endpoints to get SQLAlchemy's AsyncSession. In my case, it is
     # get_async_session
     app.dependency_overrides[get_session] = override_get_async_session
-    yield AsyncClient(app=app, base_url="http://test")
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport,
+        base_url=CLIENT_BASE_URL,
+        follow_redirects=True
+    ) as ac:
+        yield ac
+        
     del app.dependency_overrides[get_session]
 
     await transaction.rollback()

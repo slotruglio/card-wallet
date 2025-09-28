@@ -2,10 +2,10 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logic.giftcard import get_giftcards
+from ..logic.giftcard import get_giftcards, create_giftcard
 from ..utility.db import get_session
 from ..model.wrapper import GiftCard
-from ..model.converter import OrmPydanticHelper
+from ..model.converter import GiftCardOrmPydanticHelper
 from ..enumerators.enums import GiftCardSpentFilter, GiftCardSortField, SortOrderFilter
 
 
@@ -38,16 +38,20 @@ async def read_giftcards(
         sort_by=sort_by.value,
         sort_order=sort_order,
     )
-
-    return [OrmPydanticHelper.orm_to_pydantic(gc, GiftCard) for gc in orm_giftcards]
+    res = []
+    for x in orm_giftcards:
+        c = await GiftCardOrmPydanticHelper.orm_to_pydantic(x, nested=True)
+        res.append(c)
+    return res
 
 @router.get("/{giftcard_id}", response_model=GiftCard)
 async def read_giftcard(giftcard_id: str):
     pass
 
 @router.post("/", response_model=GiftCard)
-async def create_giftcard(giftcard: GiftCard):
-    pass
+async def post_giftcard(giftcard: GiftCard, session: AsyncSession = Depends(get_session)):
+    data = await create_giftcard(session, giftcard)
+    return await GiftCardOrmPydanticHelper.orm_to_pydantic(data, nested=True)
 
 @router.post("/{giftcard_id}/upload")
 async def upload_giftcard_file(giftcard_id: str, file: UploadFile):

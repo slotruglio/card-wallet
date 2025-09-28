@@ -1,4 +1,5 @@
 from datetime import datetime, UTC
+from typing import Optional
 from sqlalchemy import TIMESTAMP
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -8,8 +9,8 @@ from ..utility.dates import force_utc
 
 class BaseClass(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    created_at: AwareDatetime = Field(description="Creation Datetime")
-    updated_at: AwareDatetime = Field(description="Last Update Datetime")
+    created_at: Optional[AwareDatetime] = Field(default=None, description="Creation Datetime")
+    updated_at: Optional[AwareDatetime] = Field(default=None, description="Last Update Datetime")
 
     @field_validator("created_at", mode="before")
     def force_utc_created_at(cls, v: datetime) -> datetime:
