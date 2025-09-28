@@ -26,4 +26,5 @@ class UserORM(BaseORM):
         "GiftCardORM",
         back_populates="user",
         passive_deletes=True,  # evita cancellazioni in cascata
+        lazy="selectin"
     )

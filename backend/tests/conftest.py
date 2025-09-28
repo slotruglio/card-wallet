@@ -46,6 +46,7 @@ async def session(
     async_session = AsyncSession(
         bind=connection,
         join_transaction_mode="create_savepoint",
+        expire_on_commit=False
     )
 
     yield async_session
@@ -101,4 +102,4 @@ async def sample_giftcard(session, sample_user):
         session.add(gc)
         await session.flush()
         await session.refresh(gc)
-    return gc
+        return gc

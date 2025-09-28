@@ -23,9 +23,12 @@ class OrmPydanticHelper:
             if hasattr(orm_instance, field):
                 value = getattr(orm_instance, field)
 
-                # if attribute is awaitable (lazy async), await it
-                if isinstance(orm_instance, AsyncAttrs) and hasattr(orm_instance.awaitable_attrs, field):
-                    value = await getattr(orm_instance.awaitable_attrs, field)
+                # handle async lazy-loaded attributes
+                if isinstance(orm_instance, AsyncAttrs):
+                    awaitable_attrs = orm_instance.awaitable_attrs
+                    attr = getattr(awaitable_attrs, field, None)
+                    if attr is not None:
+                        value = await attr
 
                 # convert UUID to str
                 if isinstance(value, uuid.UUID):
