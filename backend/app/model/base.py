@@ -1,5 +1,6 @@
 from datetime import datetime, UTC
 from sqlalchemy import TIMESTAMP
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql import func
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator
@@ -18,7 +19,7 @@ class BaseClass(BaseModel):
     def force_utc_updated_at(cls, v: datetime) -> datetime:
         return force_utc(v)
 
-class BaseORM(DeclarativeBase):
+class BaseORM(AsyncAttrs, DeclarativeBase):
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
         default=datetime.now(tz=UTC),  # lato Python

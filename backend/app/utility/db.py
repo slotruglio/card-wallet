@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.exc import SQLAlchemyError
 
 # Get DB connection URL from env
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://fastapi:fastapi@db:5432/fastapi_db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://fastapi:fastapi@localhost:5432/fastapi_db")
 
 # Create async engine
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)

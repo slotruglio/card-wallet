@@ -1,70 +1,104 @@
+# conftest.py
+from typing import AsyncGenerator
+import uuid
 import pytest
-import asyncio
-from httpx import AsyncClient
-from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from app.main import app
+from httpx import AsyncClient, ASGITransport
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, AsyncConnection
+
+from app.main import app  # your FastAPI app
 from app.model.base import BaseORM
 from app.model.user import UserORM
 from app.model.gift_card import GiftCardORM
-import uuid
+from app.utility.db import DATABASE_URL, get_session
 
-DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+# To run async tests
+pytestmark = pytest.mark.anyio
 
-# Async engine & session
-engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
-# Event loop for pytest-asyncio
+engine = create_async_engine(DATABASE_URL)
+# Required per https://anyio.readthedocs.io/en/stable/testing.html#using-async-fixtures-with-higher-scopes
 @pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
+def anyio_backend():
+    return "asyncio"
 
-# Initialize tables once per test session
-@pytest.fixture(scope="session", autouse=True)
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(BaseORM.metadata.create_all)
-    yield
-    await engine.dispose()
 
-# Provide session per test
+@pytest.fixture(scope="session")
+async def connection(anyio_backend) -> AsyncGenerator[AsyncConnection, None]:
+    async with engine.connect() as connection:
+        yield connection
+
+        
 @pytest.fixture()
-async def db_session():
-    async with AsyncSessionLocal() as session:
-        yield session
+async def transaction(
+    connection: AsyncConnection,
+) -> AsyncGenerator:
+    async with connection.begin() as transaction:
+        yield transaction
 
-# Test client with overridden session
-@pytest.fixture()
-async def client(db_session):
-    from app.utility.db import get_session
-    app.dependency_overrides[get_session] = lambda: db_session
-    async with AsyncClient(app=app, base_url="http://test") as c:
-        yield c
 
-# Fixture: sample user
+# Use this fixture to get SQLAlchemy's AsyncSession.
+# All changes that occur in a test function are rolled back
+# after function exits, even if session.commit() is called
+# in inner functions
 @pytest.fixture()
-async def sample_user(db_session):
-    user = UserORM(name="John Doe")
-    db_session.add(user)
-    await db_session.commit()
-    await db_session.refresh(user)
-    return user
-
-# Fixture: sample giftcard
-@pytest.fixture()
-async def sample_giftcard(db_session, sample_user):
-    gc = GiftCardORM(
-        id=uuid.uuid4(),
-        supplier="Amazon",
-        amount=10000,
-        spent_amount=0,
-        user_id=sample_user.id
+async def session(
+    connection, transaction
+) -> AsyncGenerator[AsyncSession, None]:
+    async_session = AsyncSession(
+        bind=connection,
+        join_transaction_mode="create_savepoint",
     )
-    db_session.add(gc)
-    await db_session.commit()
-    await db_session.refresh(gc)
+
+    yield async_session
+
+    await transaction.rollback()
+
+# Use this fixture to get HTTPX's client to test API.
+# All changes that occur in a test function are rolled back
+# after function exits, even if session.commit() is called
+# in FastAPI's application endpoints
+@pytest.fixture()
+async def client(
+    connection, transaction
+) -> AsyncGenerator[AsyncClient, None]:
+    async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
+        async_session = AsyncSession(
+            bind=connection,
+            join_transaction_mode="create_savepoint",
+        )
+        async with async_session:
+            yield async_session
+    
+    # Here you have to override the dependency that is used in FastAPI's
+    # endpoints to get SQLAlchemy's AsyncSession. In my case, it is
+    # get_async_session
+    app.dependency_overrides[get_session] = override_get_async_session
+    yield AsyncClient(app=app, base_url="http://test")
+    del app.dependency_overrides[get_session]
+
+    await transaction.rollback()
+
+# Sample user
+@pytest.fixture()
+async def sample_user(session):
+    async with session.begin():
+        user = UserORM(name="John Doe")
+        session.add(user)
+        await session.flush()
+        await session.refresh(user)
+        return user
+
+# Sample giftcard
+@pytest.fixture()
+async def sample_giftcard(session, sample_user):
+    async with session.begin():
+        gc = GiftCardORM(
+            id=uuid.uuid4(),
+            supplier="Amazon",
+            amount=10000,
+            spent_amount=0,
+            user_id=sample_user.id,
+        )
+        session.add(gc)
+        await session.flush()
+        await session.refresh(gc)
     return gc

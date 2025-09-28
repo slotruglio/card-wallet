@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 import uuid
 
 from sqlalchemy import UUID  # Needed for Python 3.11+ forward references
@@ -21,8 +22,8 @@ class UserORM(BaseORM):
     name: Mapped[str]
 
     # Lista giftcard → relazione inversa
-    giftcards: Mapped[list["GiftCardORM"]] = relationship(
+    giftcards: Mapped[List["GiftCardORM"]] = relationship(
         "GiftCardORM",
         back_populates="user",
-        passive_deletes=True  # evita cancellazioni in cascata
+        passive_deletes=True,  # evita cancellazioni in cascata
     )

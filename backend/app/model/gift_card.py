@@ -67,7 +67,7 @@ class GiftCardORM(BaseORM):
     )
     user: Mapped["UserORM"] = relationship(
         "UserORM",
-        back_populates="giftcards"
+        back_populates="giftcards",
     )
 
     file: Mapped[bytes] = mapped_column(LargeBinary, nullable=True)
