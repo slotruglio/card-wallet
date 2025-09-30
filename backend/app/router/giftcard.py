@@ -1,11 +1,11 @@
 from io import BytesIO
-from typing import List, Optional
-from fastapi import APIRouter, Depends, Query, UploadFile
+from typing import Annotated, List, Optional
+from fastapi import APIRouter, Depends, File, Query, UploadFile
 from fastapi import exceptions, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..logic.giftcard import get_giftcards, create_giftcard, save_file, get_file
+from ..logic.giftcard import get_giftcards, create_giftcard, save_file, get_file, spend_amount
 from ..utility.db import get_session
 from ..model.wrapper import GiftCard, FileRead
 from ..model.converter import GiftCardOrmPydanticHelper, FileReadOrmPydanticHelper
@@ -48,8 +48,13 @@ async def read_giftcards(
     return res
 
 @router.get("/{giftcard_id}", response_model=GiftCard)
-async def read_giftcard(giftcard_id: str):
-    pass
+async def read_giftcard(giftcard_id: str, session: AsyncSession = Depends(get_session)):
+    orm_giftcards = await get_giftcards(session=session, giftcard_id=giftcard_id)
+    if len(orm_giftcards) == 0:
+        raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    return await GiftCardOrmPydanticHelper.orm_to_pydantic(orm_giftcards[0], nested=True)
+    
 
 @router.get("/{giftcard_id}/download")
 async def download_file(giftcard_id: str, session: AsyncSession = Depends(get_session)):
@@ -69,7 +74,7 @@ async def post_giftcard(giftcard: GiftCard, session: AsyncSession = Depends(get_
     return await GiftCardOrmPydanticHelper.orm_to_pydantic(data, nested=True)
 
 @router.post("/{giftcard_id}/upload", status_code=status.HTTP_202_ACCEPTED, responses={status.HTTP_202_ACCEPTED:{}})
-async def upload_giftcard_file(giftcard_id: str, file: UploadFile, session: AsyncSession = Depends(get_session)):
+async def upload_giftcard_file(giftcard_id: str, file: Annotated[UploadFile, File(description="File to upload") ], session: AsyncSession = Depends(get_session)) -> None:
     """
     Upload a PDF or image for a gift card
     """
@@ -78,12 +83,16 @@ async def upload_giftcard_file(giftcard_id: str, file: UploadFile, session: Asyn
     await save_file(session, giftcard_id, file)
     return 
 
-@router.patch("/{giftcard_id}/spend")
-async def spend_giftcard_amount(giftcard_id: str, spent_amount: int):
+@router.patch("/{giftcard_id}/spend", response_model=GiftCard)
+async def spend_giftcard_amount(giftcard_id: str, spent_amount: int, session: AsyncSession = Depends(get_session)):
     """
     Increment the spent amount for a gift card
     """
-    pass
+    orm_giftcard = await spend_amount(session=session, giftcard_id=giftcard_id, amount=spent_amount)
+    if orm_giftcard is None:
+        raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    return await GiftCardOrmPydanticHelper.orm_to_pydantic(orm_giftcard, nested=True)
 
 
 @router.put("/{giftcard_id}", response_model=GiftCard)

@@ -67,6 +67,17 @@ async def create_giftcard(session: AsyncSession, giftcard) -> GiftCardORM:
     await session.refresh(data)
     return data
 
+async def spend_amount(session: AsyncSession, giftcard_id: str, amount: int) -> GiftCardORM:
+    giftcards = await get_giftcards(session=session, giftcard_id=giftcard_id)
+    if len(giftcards) == 0:
+        return
+    giftcard = giftcards[0]
+    amount = min(giftcard.amount-giftcard.spent_amount, amount)
+    giftcard.spent_amount += amount
+    await session.commit()
+    await session.refresh(giftcard)
+    return giftcard
+
 async def save_file(session: AsyncSession, giftcard_id: str, file: UploadFile):
     contents = await file.read()  # read entire file into memory
 
