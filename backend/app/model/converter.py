@@ -8,6 +8,7 @@ from .wrapper import GiftCard, User, FileRead
 from .user import UserORM
 from .gift_card import GiftCardORM
 from .file import FileReadORM
+from ..utility import currency
 
 ORM = TypeVar("ORM", bound=DeclarativeBase)
 Pyd = TypeVar("Pyd", bound=BaseModel)
@@ -72,14 +73,15 @@ class GiftCardOrmPydanticHelper(OrmPydanticHelper):
         user = None
         if nested:
             user = await orm_instance.awaitable_attrs.user
+        if user is not None:
             user = await UserOrmPydanticHelper.orm_to_pydantic(user)
         return GiftCard(
             id = orm_instance.id,
             created_at=orm_instance.created_at,
             updated_at=orm_instance.updated_at,
             supplier=orm_instance.supplier,
-            amount=orm_instance.amount,
-            spent_amount=orm_instance.spent_amount,
+            amount=currency.int_to_currency(orm_instance.amount),
+            spent_amount=currency.int_to_currency(orm_instance.spent_amount),
             user = user,
             expiration_date=orm_instance.expiration_date
         )
@@ -87,11 +89,12 @@ class GiftCardOrmPydanticHelper(OrmPydanticHelper):
     def pydantic_to_orm(pyd_instance: GiftCard):
         return GiftCardORM(
             supplier=pyd_instance.supplier,
-            amount=pyd_instance.amount,
-            spent_amount=pyd_instance.spent_amount,
+            amount=pyd_instance.amount_as_cents,
+            spent_amount=pyd_instance.spent_amounts_as_cents,
             user_id = pyd_instance.user_id,
             expiration_date=pyd_instance.expiration_date
         )
+
 class UserOrmPydanticHelper(OrmPydanticHelper):
     @staticmethod
     async def orm_to_pydantic(orm_instance: UserORM, pyd_model = User, nested: bool = False):

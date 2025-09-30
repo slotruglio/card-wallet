@@ -39,3 +39,10 @@ async def create_user(session: AsyncSession, user) -> UserORM:
     await session.commit()
     await session.refresh(data)
     return data
+
+async def delete_user(session: AsyncSession, user_id):
+    data = await get_users(session=session, user_id=user_id)
+    if len(data) == 0:
+        return
+    await session.delete(data[0])
+    await session.commit()

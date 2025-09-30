@@ -1,8 +1,10 @@
+from decimal import Decimal
 from io import BytesIO
 from typing import Annotated, List, Optional
 from fastapi import APIRouter, Depends, File, Query, UploadFile
 from fastapi import exceptions, status
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logic import giftcard as bl
@@ -11,6 +13,9 @@ from ..model.wrapper import GiftCard, FileRead
 from ..model.converter import GiftCardOrmPydanticHelper, FileReadOrmPydanticHelper
 from ..enumerators.enums import GiftCardSpentFilter, GiftCardSortField, SortOrderFilter
 
+
+class SpentMoney(BaseModel):
+    amount: Decimal = Field(decimal_places=2)
 
 router = APIRouter(tags=["giftcards"])
 
@@ -83,11 +88,11 @@ async def upload_giftcard_file(giftcard_id: str, file: Annotated[UploadFile, Fil
     return 
 
 @router.patch("/{giftcard_id}/spend", response_model=GiftCard)
-async def spend_giftcard_amount(giftcard_id: str, spent_amount: int, session: AsyncSession = Depends(get_session)):
+async def spend_giftcard_amount(giftcard_id: str, spentBody: SpentMoney, session: AsyncSession = Depends(get_session)):
     """
     Increment the spent amount for a gift card
     """
-    orm_giftcard = await bl.spend_amount(session=session, giftcard_id=giftcard_id, amount=spent_amount)
+    orm_giftcard = await bl.spend_amount(session=session, giftcard_id=giftcard_id, amount=spentBody.amount)
     if orm_giftcard is None:
         raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     

@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from ..utility.db import get_session
 from ..model.wrapper import User
 from ..enumerators.enums import SortOrderFilter, UserSortField
-from ..logic.user import get_users, create_user
+from ..logic import user as bl
 from ..model.converter import UserOrmPydanticHelper
 from fastapi import status
 from fastapi import exceptions
@@ -18,7 +18,7 @@ async def read_users(
     sort_by: UserSortField = Query(UserSortField.created_at),
     sort_order: SortOrderFilter = Query("desc"),
     session: AsyncSession = Depends(get_session)):
-    data = await get_users(session=session, limit=limit, offset=offset, sort_by=sort_by.value, sort_order=sort_order.value)
+    data = await bl.get_users(session=session, limit=limit, offset=offset, sort_by=sort_by.value, sort_order=sort_order.value)
     
     res = []
     for x in data:
@@ -32,7 +32,7 @@ async def read_user(
     user_id: str,
     include_giftcards: bool = Query(False, description="If true, it will include giftcards"),
     session: AsyncSession = Depends(get_session)):
-    data = await get_users(session, user_id=user_id, limit=1)
+    data = await bl.get_users(session, user_id=user_id, limit=1)
     if len(data) == 0:
         raise exceptions.HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return await UserOrmPydanticHelper.orm_to_pydantic(data[0], nested=include_giftcards)
@@ -40,16 +40,16 @@ async def read_user(
 @router.post("/", response_model=User)
 async def post_user(user: User, session: AsyncSession = Depends(get_session)):
     try:
-        data = await create_user(session, user)
+        data = await bl.create_user(session, user)
     except IntegrityError:
         raise exceptions.HTTPException(status_code=status.HTTP_409_CONFLICT)
     as_pyd = await UserOrmPydanticHelper.orm_to_pydantic(data)
     return as_pyd
 
 @router.put("/{user_id}", response_model=User)
-async def update_user(user_id: int, user: User, session: AsyncSession = Depends(get_session)):
+async def update_user(user_id: str, user: User, session: AsyncSession = Depends(get_session)):
     raise NotImplementedError
 
-@router.delete("/{user_id}")
-async def delete_user(user_id: int, session: AsyncSession = Depends(get_session)):
-    raise NotImplementedError
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(user_id: str, session: AsyncSession = Depends(get_session)):
+    await bl.delete_user(session=session, user_id=user_id)
