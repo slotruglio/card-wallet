@@ -32,9 +32,15 @@ CREATE TABLE giftcard (
 	expiration_date TIMESTAMP WITH TIME ZONE DEFAULT now(), 
 	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
 	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
-	PRIMARY KEY (id), 
-	FOREIGN KEY(user_id) REFERENCES "user" (id) ON DELETE SET NULL,
-	FOREIGN KEY(file_id) REFERENCES "file" (id) ON DELETE SET NULL
+	PRIMARY KEY (id)
 )
 
 ;
+
+ALTER TABLE "file"
+    ADD CONSTRAINT fk_file_giftcard FOREIGN KEY(giftcard_id) REFERENCES giftcard(id) ON DELETE CASCADE;
+
+ALTER TABLE giftcard
+    ADD CONSTRAINT fk_giftcard_file FOREIGN KEY(file_id) REFERENCES "file"(id) ON DELETE SET NULL;
+ALTER TABLE giftcard	
+	ADD CONSTRAINT fk_giftcard_user FOREIGN KEY(user_id) REFERENCES "user"(id) ON DELETE SET NULL;

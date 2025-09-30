@@ -94,3 +94,11 @@ async def get_file(session: AsyncSession, giftcard_id: str) -> FileReadORM:
     stmt = select(FileReadORM).where(FileReadORM.giftcard_id == giftcard_id)
     result = await session.execute(stmt)
     return result.scalars().first()
+
+async def delete_giftcard(session: AsyncSession, giftcard_id: str):
+    giftcards = await get_giftcards(session=session, giftcard_id=giftcard_id)
+    if len(giftcards) == 0:
+        return
+    await session.delete(giftcards[0])
+    await session.commit()
+    return
