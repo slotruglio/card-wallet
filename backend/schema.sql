@@ -1,0 +1,46 @@
+
+CREATE TABLE "user" (
+	id UUID NOT NULL, 
+	name VARCHAR UNIQUE NOT NULL, 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+;
+
+CREATE TABLE "file" (
+	id UUID NOT NULL, 
+	giftcard_id UUID UNIQUE, 
+	filename VARCHAR NOT NULL, 
+	content_type VARCHAR NOT NULL, 
+	data BYTEA,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+;
+
+CREATE TABLE giftcard (
+	id UUID NOT NULL, 
+	supplier VARCHAR NOT NULL, 
+	amount INTEGER NOT NULL, 
+	spent_amount INTEGER NOT NULL, 
+	user_id UUID, 
+	file_id UUID,
+	expiration_date TIMESTAMP WITH TIME ZONE DEFAULT now(), 
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+;
+
+ALTER TABLE "file"
+    ADD CONSTRAINT fk_file_giftcard FOREIGN KEY(giftcard_id) REFERENCES giftcard(id) ON DELETE CASCADE;
+
+ALTER TABLE giftcard
+    ADD CONSTRAINT fk_giftcard_file FOREIGN KEY(file_id) REFERENCES "file"(id) ON DELETE SET NULL;
+ALTER TABLE giftcard	
+	ADD CONSTRAINT fk_giftcard_user FOREIGN KEY(user_id) REFERENCES "user"(id) ON DELETE SET NULL;
