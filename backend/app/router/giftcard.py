@@ -60,7 +60,7 @@ async def download_file(giftcard_id: str, session: AsyncSession = Depends(get_se
     return StreamingResponse(
         BytesIO(pyd.data),
         media_type=pyd.content_type,
-        headers={"Content-Disposition": "attachment; filename={pyd.filename}"}
+        headers={"Content-Disposition": f"attachment; filename={pyd.filename}"}
     )
 
 @router.post("/", response_model=GiftCard)

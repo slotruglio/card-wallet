@@ -4,9 +4,10 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncAttrs
 import uuid
 
-from .wrapper import GiftCard, User
+from .wrapper import GiftCard, User, FileRead
 from .user import UserORM
 from .gift_card import GiftCardORM
+from .file import FileReadORM
 
 ORM = TypeVar("ORM", bound=DeclarativeBase)
 Pyd = TypeVar("Pyd", bound=BaseModel)
@@ -110,4 +111,23 @@ class UserOrmPydanticHelper(OrmPydanticHelper):
         return UserORM(name=pyd_instance.name)
 
 class FileReadOrmPydanticHelper(OrmPydanticHelper):
-    pass
+    @staticmethod
+    async def orm_to_pydantic(orm_instance: FileReadORM, pyd_model= FileRead, nested = True) -> FileRead:
+        return FileRead(
+            created_at=orm_instance.created_at,
+            updated_at=orm_instance.updated_at,
+            id = orm_instance.id,
+            giftcard_id=orm_instance.giftcard_id,
+            filename=orm_instance.filename,
+            content_type=orm_instance.content_type,
+            data=orm_instance.data
+        )
+    
+    @staticmethod
+    def pydantic_to_orm(pyd_instance, orm_model=FileReadORM) -> FileReadORM:
+        return FileReadORM(
+            giftcard_id=pyd_instance.giftcard_id,
+            filename=pyd_instance.filename,
+            content_type=pyd_instance.content_type,
+            data=pyd_instance.data
+        )

@@ -85,5 +85,6 @@ class GiftCardORM(BaseORM):
     file = relationship(
         "FileReadORM",
         uselist=False,  # important: one-to-one
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        single_parent=True
     )
