@@ -10,4 +10,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get helloWorld => 'Ciao Mondo!';
+
+  @override
+  String get homeItem => 'Home';
+
+  @override
+  String get addItem => 'Carica';
+
+  @override
+  String get settingsItem => 'Impostazioni';
 }

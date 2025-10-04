@@ -10,4 +10,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helloWorld => 'Hello World!';
+
+  @override
+  String get homeItem => 'Home';
+
+  @override
+  String get addItem => 'Add';
+
+  @override
+  String get settingsItem => 'Setting';
 }

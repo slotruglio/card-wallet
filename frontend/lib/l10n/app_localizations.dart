@@ -103,6 +103,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hello World!'**
   String get helloWorld;
+
+  /// Home navigation item
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeItem;
+
+  /// Add navigation item
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addItem;
+
+  /// Settings navigation item
+  ///
+  /// In en, this message translates to:
+  /// **'Setting'**
+  String get settingsItem;
 }
 
 class _AppLocalizationsDelegate

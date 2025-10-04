@@ -2,5 +2,17 @@
   "helloWorld": "Hello World!",
   "@helloWorld": {
     "description": "The conventional newborn programmer greeting"
+  },
+  "homeItem": "Home",
+  "@homeItem": {
+    "description": "Home navigation item"
+  },
+  "addItem": "Add",
+  "@addItem": {
+    "description": "Add navigation item"
+  },
+  "settingsItem": "Setting",
+  "@settingsItem": {
+    "description": "Settings navigation item"
   }
 }

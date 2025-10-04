@@ -1,3 +1,6 @@
 {
-    "helloWorld": "Ciao Mondo!"
+    "helloWorld": "Ciao Mondo!",
+    "homeItem": "Home",
+    "addItem": "Carica",
+    "settingsItem": "Impostazioni"
 }
