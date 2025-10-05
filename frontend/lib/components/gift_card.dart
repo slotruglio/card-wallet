@@ -1,9 +1,10 @@
 
+import 'package:card_wallet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class GiftCardData {
   final String supplier;
-  final int amount;
+  final double amount;
   final DateTime expirationDate;
 
   GiftCardData(this.supplier, this.amount, this.expirationDate);
@@ -21,7 +22,7 @@ class GiftCardWidget extends StatelessWidget {
               child: ListTile(
                 title: Text(data.supplier),
                 subtitle: Text(
-                  "Amount: \$${data.amount}\nExpires: ${data.expirationDate.toLocal().toString().split(' ')[0]}",
+                  "${AppLocalizations.of(context)!.amountText(data.amount.toStringAsFixed(2))}\n${AppLocalizations.of(context)!.expirationDateText(data.expirationDate.toLocal().toString().split(' ')[0])}"
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),

@@ -14,5 +14,81 @@
   "settingsItem": "Setting",
   "@settingsItem": {
     "description": "Settings navigation item"
+  },
+  "noMoreGiftCardText": "🎉 No more gift cards",
+  "@noMoreGiftCardText" : {
+    "description": "Text for no more gift card in home"
+  },
+  "amountText": "Amount: {amount}",
+  "@amountText": {
+    "description": "Amount text with variable",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "120.30"
+      }
+    }
+  },
+  "expirationDateText": "Expires on {expirationDate}",
+  "@expirationDateText": {
+    "description": "Expiration text with variable",
+    "placeholders": {
+      "expirationDate": {
+        "type": "String",
+        "example": "12/12/2025"
+      }
+    }
+  },
+  "giftCardPageTitle": "Gift Cards",
+  "@giftCardPageTitle": {
+    "description": "gift card page title"
+  },
+  "giftCardUploadSuccessText": "Gift card uploaded successfully!",
+  "@giftCardUploadSuccessText": {
+    "description": "Text for successfull upload"
+  },
+  "giftCardUploadText": "Upload Gift Card",
+  "@giftCardUploadText": {
+    "description": "Upload gift card message"
+  },
+  "supplierText": "Supplier",
+  "@supplierText": {
+    "description": "Supplier text"
+  },
+  "supplierValidationText": "Enter supplier name",
+  "@supplierValidationText": {
+    "description": "Text for supplier validation"
+  },
+  "amountFormText": "Amount",
+  "@amountFormText": {
+    "description": "Text for amount"
+  },
+  "amountValidationText": "Enter amount",
+  "@amountValidationText": {
+    "description": "Text for amount validation"
+  },
+  "amountWrongText": "Enter a valid number",
+  "@amountWrongText": {
+    "description": "Text for amount wrong number"
+  },
+  "expirationDateFormText": "Expiration Date",
+  "@expirationDateFormText": {
+    "description":"Text for expiration date form"
+  },
+  "expirationDateFormTooltip": "Tap to select date",
+  "@expirationDateFormTooltip": {
+    "description": "tooltip for expiration date"
+  },
+  "fileFormText": "Select File",
+  "@fileFormText": {
+    "description": "text for select file form"
+  },
+  "uploadingText": "Uploading...",
+  "@uploadingText": {
+    "description": "text for gift card uploading"
+  },
+  "uploadGiftCardButtonText": "Upload Gift Card",
+  "@uploadGiftCardButtonText": {
+    "description": "text for upload button"
   }
 }

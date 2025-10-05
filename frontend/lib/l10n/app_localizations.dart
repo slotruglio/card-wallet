@@ -121,6 +121,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setting'**
   String get settingsItem;
+
+  /// Text for no more gift card in home
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 No more gift cards'**
+  String get noMoreGiftCardText;
+
+  /// Amount text with variable
+  ///
+  /// In en, this message translates to:
+  /// **'Amount: {amount}'**
+  String amountText(String amount);
+
+  /// Expiration text with variable
+  ///
+  /// In en, this message translates to:
+  /// **'Expires on {expirationDate}'**
+  String expirationDateText(String expirationDate);
+
+  /// gift card page title
+  ///
+  /// In en, this message translates to:
+  /// **'Gift Cards'**
+  String get giftCardPageTitle;
+
+  /// Text for successfull upload
+  ///
+  /// In en, this message translates to:
+  /// **'Gift card uploaded successfully!'**
+  String get giftCardUploadSuccessText;
+
+  /// Upload gift card message
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Gift Card'**
+  String get giftCardUploadText;
+
+  /// Supplier text
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get supplierText;
+
+  /// Text for supplier validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter supplier name'**
+  String get supplierValidationText;
+
+  /// Text for amount
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amountFormText;
+
+  /// Text for amount validation
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount'**
+  String get amountValidationText;
+
+  /// Text for amount wrong number
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid number'**
+  String get amountWrongText;
+
+  /// Text for expiration date form
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration Date'**
+  String get expirationDateFormText;
+
+  /// tooltip for expiration date
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to select date'**
+  String get expirationDateFormTooltip;
+
+  /// text for select file form
+  ///
+  /// In en, this message translates to:
+  /// **'Select File'**
+  String get fileFormText;
+
+  /// text for gift card uploading
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading...'**
+  String get uploadingText;
+
+  /// text for upload button
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Gift Card'**
+  String get uploadGiftCardButtonText;
 }
 
 class _AppLocalizationsDelegate

@@ -19,4 +19,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsItem => 'Setting';
+
+  @override
+  String get noMoreGiftCardText => '🎉 No more gift cards';
+
+  @override
+  String amountText(String amount) {
+    return 'Amount: $amount';
+  }
+
+  @override
+  String expirationDateText(String expirationDate) {
+    return 'Expires on $expirationDate';
+  }
+
+  @override
+  String get giftCardPageTitle => 'Gift Cards';
+
+  @override
+  String get giftCardUploadSuccessText => 'Gift card uploaded successfully!';
+
+  @override
+  String get giftCardUploadText => 'Upload Gift Card';
+
+  @override
+  String get supplierText => 'Supplier';
+
+  @override
+  String get supplierValidationText => 'Enter supplier name';
+
+  @override
+  String get amountFormText => 'Amount';
+
+  @override
+  String get amountValidationText => 'Enter amount';
+
+  @override
+  String get amountWrongText => 'Enter a valid number';
+
+  @override
+  String get expirationDateFormText => 'Expiration Date';
+
+  @override
+  String get expirationDateFormTooltip => 'Tap to select date';
+
+  @override
+  String get fileFormText => 'Select File';
+
+  @override
+  String get uploadingText => 'Uploading...';
+
+  @override
+  String get uploadGiftCardButtonText => 'Upload Gift Card';
 }

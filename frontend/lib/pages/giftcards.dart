@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:card_wallet/components/gift_card.dart';
+import 'package:card_wallet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class GiftCardListPage extends StatefulWidget {
@@ -50,7 +51,7 @@ class _GiftCardListPageState extends State<GiftCardListPage> {
             final id = _page * _pageSize + i;
             return GiftCardData(
               "Supplier $id",
-              10 + id,
+              double.parse((10 + id).toString()),
               DateTime.now().add(Duration(days: id * 2)),
             );
           })
@@ -81,7 +82,7 @@ class _GiftCardListPageState extends State<GiftCardListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Gift Cards')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.giftCardPageTitle)),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: ListView.builder(
@@ -95,11 +96,11 @@ class _GiftCardListPageState extends State<GiftCardListPage> {
                   child: Center(child: CircularProgressIndicator()),
                 );
               } else if (!_hasMore) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.all(16),
                   child: Center(
                     child: Text(
-                      '🎉 No more gift cards',
+                      AppLocalizations.of(context)!.noMoreGiftCardText,
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),

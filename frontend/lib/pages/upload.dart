@@ -1,3 +1,5 @@
+import 'package:card_wallet/l10n/app_localizations.dart';
+import 'package:card_wallet/l10n/app_localizations_en.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -38,7 +40,7 @@ class _UploadPageState extends State<UploadPage> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gift card uploaded successfully!")),
+        SnackBar(content: Text(AppLocalizations.of(context)!.giftCardUploadSuccessText)),
       );
     }
   }
@@ -71,7 +73,7 @@ class _UploadPageState extends State<UploadPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Upload Gift Card")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.giftCardUploadText)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -81,25 +83,25 @@ class _UploadPageState extends State<UploadPage> {
             children: [
               TextFormField(
                 controller: _supplierController,
-                decoration: const InputDecoration(
-                  labelText: "Supplier",
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.supplierText,
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
-                    value == null || value.isEmpty ? "Enter supplier name" : null,
+                    value == null || value.isEmpty ? AppLocalizations.of(context)!.supplierValidationText : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _amountController,
-                decoration: const InputDecoration(
-                  labelText: "Amount (€)",
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.amountFormText,
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty) return "Enter amount";
+                  if (value == null || value.isEmpty) return AppLocalizations.of(context)!.amountValidationText;
                   final n = num.tryParse(value);
-                  if (n == null || n <= 0) return "Enter a valid number";
+                  if (n == null || n <= 0) return AppLocalizations.of(context)!.amountWrongText;
                   return null;
                 },
               ),
@@ -107,13 +109,13 @@ class _UploadPageState extends State<UploadPage> {
               InkWell(
                 onTap: _pickDate,
                 child: InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: "Expiration Date",
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.expirationDateFormText,
                     border: OutlineInputBorder(),
                   ),
                   child: Text(
                     _expirationDate == null
-                        ? "Tap to select date"
+                        ? AppLocalizations.of(context)!.expirationDateFormTooltip
                         : "${_expirationDate!.day}/${_expirationDate!.month}/${_expirationDate!.year}",
                   ),
                 ),
@@ -121,7 +123,7 @@ class _UploadPageState extends State<UploadPage> {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 icon: const Icon(Icons.attach_file),
-                label: const Text("Select File"),
+                label: Text(AppLocalizations.of(context)!.fileFormText),
                 onPressed: _uploading ? null : _mockPickFile,
               ),
               const SizedBox(height: 10),
@@ -140,7 +142,7 @@ class _UploadPageState extends State<UploadPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.cloud_upload),
-                label: Text(_uploading ? "Uploading..." : "Upload Gift Card"),
+                label: Text(_uploading ? AppLocalizations.of(context)!.uploadingText : AppLocalizations.of(context)!.uploadGiftCardButtonText),
                 onPressed: _uploading ? null : _mockUpload,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),

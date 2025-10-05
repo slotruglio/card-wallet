@@ -2,5 +2,21 @@
     "helloWorld": "Ciao Mondo!",
     "homeItem": "Home",
     "addItem": "Carica",
-    "settingsItem": "Impostazioni"
+    "settingsItem": "Impostazioni",
+    "noMoreGiftCardText": "🎉 Non ci sono altri buoni",
+    "amountText": "Importo: {amount}",
+    "expirationDateText": "Scade il {expirationDate}",
+    "giftCardPageTitle": "Buoni",
+    "giftCardUploadSuccessText": "Buono caricato con successo!",
+    "giftCardUploadText": "Carica Buono",
+    "supplierText": "Fornitore",
+    "supplierValidationText": "Inserisci il nome del fornitore",
+    "amountFormText": "Importo",
+    "amountValidationText": "Inserisci importo",
+    "amountWrongText": "Inserisci un numero valdio",
+    "expirationDateFormText": "Data di scadenza",
+    "expirationDateFormTooltip": "Fai tap per selezionare la data",
+    "fileFormText": "Scegli file",
+    "uploadingText": "Caricando...",
+    "uploadGiftCardButtonText": "Carica buono"
 }
