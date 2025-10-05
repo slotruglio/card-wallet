@@ -18,5 +18,20 @@
     "expirationDateFormTooltip": "Fai tap per selezionare la data",
     "fileFormText": "Scegli file",
     "uploadingText": "Caricando...",
-    "uploadGiftCardButtonText": "Carica buono"
+    "uploadGiftCardButtonText": "Carica buono",
+    "settingsPageTitle": "Impostazioni",
+    "darkModeTitle": "Tema scuro",
+    "darkModeSubtitle": "Usa il tema scuro in tutta l'app",
+    "notificationsTitle": "Notifiche",
+    "notificationsSubtitle": "Ricevi notifiche push",
+    "languageTitle": "Lingua",
+    "selectLanguageDialogTitle": "Seleziona la lingua",
+    "languageEnglish": "Inglese",
+    "languageItalian": "Italiano",
+    "aboutTitle": "Informazioni",
+    "aboutAppName": "Gestore Gift Card",
+    "aboutVersion": "Versione {version}",
+    "aboutCopyright": "© 2025 Samuele Inc.",
+    "logoutTitle": "Disconnetti",
+    "logoutSuccessMessage": "Disconnessione avvenuta con successo"
 }

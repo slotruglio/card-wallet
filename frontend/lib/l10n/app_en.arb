@@ -90,5 +90,80 @@
   "uploadGiftCardButtonText": "Upload Gift Card",
   "@uploadGiftCardButtonText": {
     "description": "text for upload button"
+  },
+  "settingsPageTitle": "Settings",
+  "@settingsPageTitle": {
+    "description": "Title of the settings page"
+  },
+
+  "darkModeTitle": "Dark Mode",
+  "@darkModeTitle": {
+    "description": "Title for dark mode toggle"
+  },
+  "darkModeSubtitle": "Use dark theme throughout the app",
+  "@darkModeSubtitle": {
+    "description": "Subtitle for dark mode toggle"
+  },
+
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "Title for notifications toggle"
+  },
+  "notificationsSubtitle": "Receive push notifications",
+  "@notificationsSubtitle": {
+    "description": "Subtitle for notifications toggle"
+  },
+
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "Title for language selection option"
+  },
+  "selectLanguageDialogTitle": "Select Language",
+  "@selectLanguageDialogTitle": {
+    "description": "Dialog title for selecting language"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Option for English language"
+  },
+  "languageItalian": "Italiano",
+  "@languageItalian": {
+    "description": "Option for Italian language"
+  },
+  "languageSpanish": "Español",
+  "@languageSpanish": {
+    "description": "Option for Spanish language"
+  },
+
+  "aboutTitle": "About",
+  "@aboutTitle": {
+    "description": "Title for about section"
+  },
+  "aboutAppName": "GiftCard Manager",
+  "@aboutAppName": {
+    "description": "Name of the app displayed in About dialog"
+  },
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "description": "Version displayed in About dialog",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "aboutCopyright": "© 2025 Samuele Inc.",
+  "@aboutCopyright": {
+    "description": "Copyright text in About dialog"
+  },
+
+  "logoutTitle": "Logout",
+  "@logoutTitle": {
+    "description": "Logout button text"
+  },
+  "logoutSuccessMessage": "Logged out successfully",
+  "@logoutSuccessMessage": {
+    "description": "Snackbar message when user logs out"
   }
 }

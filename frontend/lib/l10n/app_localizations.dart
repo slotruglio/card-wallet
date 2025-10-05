@@ -217,6 +217,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload Gift Card'**
   String get uploadGiftCardButtonText;
+
+  /// Title of the settings page
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsPageTitle;
+
+  /// Title for dark mode toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkModeTitle;
+
+  /// Subtitle for dark mode toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Use dark theme throughout the app'**
+  String get darkModeSubtitle;
+
+  /// Title for notifications toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// Subtitle for notifications toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Receive push notifications'**
+  String get notificationsSubtitle;
+
+  /// Title for language selection option
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageTitle;
+
+  /// Dialog title for selecting language
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguageDialogTitle;
+
+  /// Option for English language
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// Option for Italian language
+  ///
+  /// In en, this message translates to:
+  /// **'Italiano'**
+  String get languageItalian;
+
+  /// Option for Spanish language
+  ///
+  /// In en, this message translates to:
+  /// **'Español'**
+  String get languageSpanish;
+
+  /// Title for about section
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// Name of the app displayed in About dialog
+  ///
+  /// In en, this message translates to:
+  /// **'GiftCard Manager'**
+  String get aboutAppName;
+
+  /// Version displayed in About dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
+  /// Copyright text in About dialog
+  ///
+  /// In en, this message translates to:
+  /// **'© 2025 Samuele Inc.'**
+  String get aboutCopyright;
+
+  /// Logout button text
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logoutTitle;
+
+  /// Snackbar message when user logs out
+  ///
+  /// In en, this message translates to:
+  /// **'Logged out successfully'**
+  String get logoutSuccessMessage;
 }
 
 class _AppLocalizationsDelegate

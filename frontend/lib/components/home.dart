@@ -1,10 +1,20 @@
 import 'package:card_wallet/pages/giftcards.dart';
+import 'package:card_wallet/pages/settings.dart';
 import 'package:card_wallet/pages/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:card_wallet/l10n/app_localizations.dart';
 
 class HomeWidget extends StatefulWidget {
-  const HomeWidget({super.key});
+  const HomeWidget({
+    super.key, 
+    required this.isDarkMode, 
+    required this.onLanguageChanged,
+    required this.onThemeChanged
+  });
+
+  final ValueChanged<bool> onThemeChanged;
+  final ValueChanged<Locale> onLanguageChanged;
+  final bool isDarkMode;
 
   @override
   State<HomeWidget> createState() => _HomeWidgetState();
@@ -47,45 +57,11 @@ class _HomeWidgetState extends State<HomeWidget> {
         /// Upload page
         UploadPage(),
 
-        /// Messages page
-        ListView.builder(
-          reverse: true,
-          itemCount: 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Hello',
-                    style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                ),
-              );
-            }
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  'Hi!',
-                  style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onPrimary),
-                ),
-              ),
-            );
-          },
-        ),
+        /// Settings page
+        SettingsPage(
+          isDarkMode: widget.isDarkMode,
+          onLanguageChanged: widget.onLanguageChanged,
+          onThemeChanged: widget.onThemeChanged)
       ][currentPageIndex],
     );
   }

@@ -71,4 +71,54 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get uploadGiftCardButtonText => 'Carica buono';
+
+  @override
+  String get settingsPageTitle => 'Impostazioni';
+
+  @override
+  String get darkModeTitle => 'Tema scuro';
+
+  @override
+  String get darkModeSubtitle => 'Usa il tema scuro in tutta l\'app';
+
+  @override
+  String get notificationsTitle => 'Notifiche';
+
+  @override
+  String get notificationsSubtitle => 'Ricevi notifiche push';
+
+  @override
+  String get languageTitle => 'Lingua';
+
+  @override
+  String get selectLanguageDialogTitle => 'Seleziona la lingua';
+
+  @override
+  String get languageEnglish => 'Inglese';
+
+  @override
+  String get languageItalian => 'Italiano';
+
+  @override
+  String get languageSpanish => 'Español';
+
+  @override
+  String get aboutTitle => 'Informazioni';
+
+  @override
+  String get aboutAppName => 'Gestore Gift Card';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Versione $version';
+  }
+
+  @override
+  String get aboutCopyright => '© 2025 Samuele Inc.';
+
+  @override
+  String get logoutTitle => 'Disconnetti';
+
+  @override
+  String get logoutSuccessMessage => 'Disconnessione avvenuta con successo';
 }
