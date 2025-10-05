@@ -25,7 +25,6 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -53,7 +52,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       ),
       body: <Widget>[
         /// Home page
-        GiftCardListPage(),
+        GiftCardPage(),
         /// Upload page
         UploadPage(),
 

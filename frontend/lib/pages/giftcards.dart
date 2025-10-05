@@ -1,120 +1,109 @@
-import 'dart:async';
 import 'package:card_wallet/components/gift_card.dart';
 import 'package:card_wallet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-class GiftCardListPage extends StatefulWidget {
-  const GiftCardListPage({super.key});
+// --------------------- Page Types ---------------------
+enum PageType { list, details }
 
-  @override
-  State<GiftCardListPage> createState() => _GiftCardListPageState();
+class PageState {
+  final PageType type;
+  final String? cardId; // only used for details
+  PageState(this.type, {this.cardId});
 }
 
-class _GiftCardListPageState extends State<GiftCardListPage> {
-  final List<GiftCardData> _giftcards = [];
-  bool _isLoading = false;
-  bool _hasMore = true;
-  int _page = 0;
-  final int _pageSize = 10;
-  final ScrollController _scrollController = ScrollController();
+// --------------------- Main Page ---------------------
+class GiftCardPage extends StatefulWidget {
+  const GiftCardPage({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _fetchGiftCards();
-    _scrollController.addListener(_scrollListener);
-  }
+  State<GiftCardPage> createState() => _GiftCardPageState();
+}
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class _GiftCardPageState extends State<GiftCardPage> {
+  final List<PageState> pageStack = [PageState(PageType.list)];
 
-  Future<void> _fetchGiftCards({bool reset = false}) async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-      if (reset) {
-        _page = 0;
-        _hasMore = true;
-      }
-    });
-
-    // Mock network delay
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Mock data generation
-    final newItems = _hasMore
-        ? List.generate(_pageSize, (i) {
-            final id = _page * _pageSize + i;
-            return GiftCardData(
-              "Supplier $id",
-              double.parse((10 + id).toString()),
-              DateTime.now().add(Duration(days: id * 2)),
-            );
-          })
-        : <GiftCardData>[];
-
-    setState(() {
-      if (reset) _giftcards.clear();
-      _giftcards.addAll(newItems);
-      _isLoading = false;
-      _page++;
-      if (newItems.length < _pageSize) _hasMore = false;
-    });
-  }
-
-  void _scrollListener() {
-    if (!_isLoading &&
-        _hasMore &&
-        _scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 200) {
-      _fetchGiftCards();
-    }
-  }
-
-  Future<void> _onRefresh() async {
-    await _fetchGiftCards(reset: true);
-  }
+  // Mock gift cards
+  final List<GiftCardData> giftCards = List.generate(
+      20,
+      (index) => GiftCardData(
+        '$index',
+        'Supplier $index',
+        (index + 1) * 100,
+        null
+        ));
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.giftCardPageTitle)),
-      body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: _giftcards.length + 1,
-          itemBuilder: (context, index) {
-            if (index == _giftcards.length) {
-              if (_isLoading) {
-                return const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              } else if (!_hasMore) {
-                return Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noMoreGiftCardText,
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }
+    final current = pageStack.last;
 
-            final card = _giftcards[index];
-            return GiftCardWidget(data: card);
-          },
+    return WillPopScope(
+      onWillPop: () async {
+        if (pageStack.length > 1) {
+          setState(() => pageStack.removeLast());
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.giftCardPageTitle),
+          leading: pageStack.length > 1
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() => pageStack.removeLast());
+                  },
+                )
+              : null,
         ),
+        body: _buildCurrentPage(current),
       ),
+    );
+  }
+
+  Widget _buildCurrentPage(PageState current) {
+    switch (current.type) {
+      case PageType.list:
+        return GiftCardListView(
+          giftCards: giftCards,
+          onCardTap: (id) {
+            setState(() => pageStack.add(PageState(PageType.details, cardId: id)));
+          },
+        );
+      case PageType.details:
+        final card =
+            giftCards.firstWhere((c) => c.id == current.cardId, orElse: () => GiftCardData('0', 'Unknown', 0, null));
+        return GiftCardDetailView(
+          giftCard: card,
+          onBack: () => setState(() => pageStack.removeLast()),
+        );
+    }
+  }
+}
+
+// --------------------- List View ---------------------
+class GiftCardListView extends StatelessWidget {
+  final List<GiftCardData> giftCards;
+  final void Function(String cardId) onCardTap;
+
+  const GiftCardListView({
+    super.key,
+    required this.giftCards,
+    required this.onCardTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: giftCards.length,
+      itemBuilder: (context, index) {
+        final card = giftCards[index];
+        return ListTile(
+          title: Text(card.supplier),
+          subtitle: Text(AppLocalizations.of(context)!.amountText(card.amount.toStringAsFixed(2))),
+          onTap: () => onCardTap(card.id),
+        );
+      },
     );
   }
 }
