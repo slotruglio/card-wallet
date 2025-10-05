@@ -1,3 +1,4 @@
+import 'package:card_wallet/pages/giftcards.dart';
 import 'package:card_wallet/pages/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:card_wallet/l10n/app_localizations.dart';
@@ -42,14 +43,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       ),
       body: <Widget>[
         /// Home page
-        Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(child: Text('Home page', style: theme.textTheme.titleLarge)),
-          ),
-        ),
-
+        GiftCardListPage(),
         /// Upload page
         UploadPage(),
 
